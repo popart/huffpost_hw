@@ -10,6 +10,7 @@ typedef struct arrayRet {
 arrayRet findConsecutiveRuns(int array[], int len, int runLen);
 arrayRet findConsecutiveRuns3(int array[], int len);
 void printIntArray(char* name, int input[], int len);
+void runTest(int input[], int len);
 
 int main() {
 	int TEST_LEN = 100;
@@ -21,17 +22,27 @@ int main() {
 	for(i=0; i<TEST_LEN; i++) {
 		test[i] = rand()%4; 
 	}
-	//print input
-	printIntArray("input", test, TEST_LEN);
-	
-	//find indices
-	arrayRet x = findConsecutiveRuns3(test, TEST_LEN);
-	//print output
-	printIntArray("output", x.array, x.len);
+	runTest(test, TEST_LEN);
 
-	//free malloc'd array
-	free(x.array);
+	//don't wanna do array of array pointers right now
+	int test2[] = {1,2,3,4,5,6,7,8,9,10};
+	int test3[] = {0,0,0,0,0,0,0,0,0,0};
+	int test4[] = {10,9,8,7,6,5,4,3,2,1};
+	int test5[] = {1,2,3,4,5,4,3,2,1,0};
+
+	runTest(test2, 10);
+	runTest(test3, 10);
+	runTest(test4, 10);
+	runTest(test5, 10);
 	return 0;
+}
+
+void runTest(int input[], int len) {
+	printIntArray("input", input, len);
+	arrayRet x = findConsecutiveRuns3(input, len);
+	printIntArray("output", x.array, x.len);
+	free(x.array);
+	printf("\n");
 }
 
 arrayRet findConsecutiveRuns3(int input[], int len) {
@@ -51,9 +62,10 @@ arrayRet findConsecutiveRuns(int input[], int len, int runLen) {
 
 	int diff; 
 	int i; //index of iterator 
-	for(i=1; i<len-2; i++) {
+	for(i=1; i<len; i++) {
 		diff = input[i]-head;
 		head = input[i];
+
 		if(diff == 1 ) { // +1
 			if(++countUp >= runLen) {
 				countUp = runLen; countDown = 1;
@@ -61,7 +73,7 @@ arrayRet findConsecutiveRuns(int input[], int len, int runLen) {
 				retI++; //if anything found, retI > 0
 			}
 		}
-		if(diff == -1) { //-1
+		else if(diff == -1) { //-1
 			if(++countDown >= runLen) {
 				countDown = runLen; countUp = 1;
 				ret[retI] = i-(runLen-1);
@@ -72,7 +84,7 @@ arrayRet findConsecutiveRuns(int input[], int len, int runLen) {
 			countUp = 1; countDown = 1;
 		}
 	}
-	arrayRet ar;
+	arrayRet ar; 
 	ar.array = ret;
 	ar.len = retI; //stays 0 if nothing found
 
